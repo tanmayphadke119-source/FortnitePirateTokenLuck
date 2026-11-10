@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Cast a luck charm before your next Fortnite match while hunting the Pirate Shop token. For fun only.">
+<meta name="theme-color" content="#06181f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ecbd4f'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%238f6116' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%238f6116'/%3E%3C/svg%3E">
+<title>Pirate Token Luck Charm</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Pirata+One&display=swap">
+<style>
+  html { height: 100%; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  /* Layout: a brass coin inside a compass bezel on the left, the ritual (headline, cast button, fortune slip) on the right; stacks to one column on phones. Single committed look: a moonless sea. */
+  :root {
+    --abyss: #06181f;
+    --tide: #0c2e39;
+    --swell: #1a5364;
+    --foam: #eaf4ee;
+    --mist: #9dbdb7;
+    --brass: #ecbd4f;
+    --brass-lit: #ffe39a;
+    --brass-deep: #8f6116;
+    --ember: #ff8552;
+    --display: "Pirata One", "Luminari", "Palatino Linotype", Georgia, serif;
+    --body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background:
+      radial-gradient(60rem 40rem at 22% 30%, var(--tide), transparent 70%),
+      var(--abyss);
+    color: var(--foam);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+
+  #sea {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 66rem;
+    margin: 0 auto;
+    padding-block: clamp(1.5rem, 5vw, 4rem);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .ritual {
+    display: grid;
+    grid-template-areas: "head" "stage" "act";
+    gap: clamp(1.25rem, 4vw, 2.5rem);
+    align-items: center;
+  }
+  @media (min-width: 52rem) {
+    .ritual {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+      grid-template-areas: "stage head" "stage act";
+      column-gap: clamp(2rem, 5vw, 4.5rem);
+    }
+    .head { align-self: end; }
+    .act { align-self: start; }
+  }
+
+  /* ---------- headline ---------- */
+  .head { grid-area: head; min-width: 0; display: grid; gap: 0.75rem; }
+  .eyebrow {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    line-height: 0.98;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  h1 em { font-style: normal; color: var(--brass); }
+  .lede { margin: 0; max-width: 34rem; color: var(--mist); }
+
+  /* ---------- coin stage ---------- */
+  .stage {
+    grid-area: stage;
+    position: relative;
+    width: min(100%, 26rem);
+    max-width: 100%;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    perspective: 60rem;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bezel-spin, .bezel { position: absolute; inset: 0; }
+  .bezel { animation: drift 120s linear infinite; }
+  .bezel svg, .face svg { display: block; width: 100%; height: 100%; }
+  @keyframes drift { to { transform: rotate(360deg); } }
+
+  .coin {
+    position: absolute;
+    inset: 15%;
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 1.4rem 1.6rem rgba(0, 0, 0, 0.55));
+  }
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .face.back { transform: rotateY(180deg); }
+
+  .stage::after {
+    content: "";
+    position: absolute;
+    inset: 12%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 transparent;
+    pointer-events: none;
+  }
+  .stage.charged::after { animation: charge 1.4s ease-out 1; }
+  @keyframes charge {
+    0% { box-shadow: 0 0 0 0 rgba(255, 227, 154, 0.55), 0 0 2rem 0.5rem rgba(236, 189, 79, 0.6); }
+    100% { box-shadow: 0 0 0 3.5rem rgba(255, 227, 154, 0), 0 0 5rem 2rem rgba(236, 189, 79, 0); }
+  }
+
+  /* ---------- action + slip ---------- */
+  .act { grid-area: act; min-width: 0; display: grid; gap: 1.5rem; }
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+
+  .cast {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    color: var(--abyss);
+    background: linear-gradient(180deg, var(--brass-lit), var(--brass) 45%, var(--brass-deep) 130%);
+    border: 0;
+    padding: 0.95rem 2.25rem 1.05rem;
+    clip-path: polygon(0.75rem 0, calc(100% - 0.75rem) 0, 100% 50%, calc(100% - 0.75rem) 100%, 0.75rem 100%, 0 50%);
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+  }
+  .cast:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  .cast:active { transform: translateY(1px); filter: brightness(0.95); }
+  .cast:focus-visible { outline: none; box-shadow: inset 0 0 0 3px var(--abyss), inset 0 0 0 5px var(--foam); }
+  .cast:disabled { cursor: progress; filter: saturate(0.6) brightness(0.85); transform: none; }
+
+  .quiet {
+    font: inherit;
+    font-size: 0.9375rem;
+    color: var(--mist);
+    background: none;
+    border: 0;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--swell);
+    text-underline-offset: 0.3em;
+  }
+  .quiet:hover { color: var(--foam); }
+  .quiet:focus-visible { outline: 2px solid var(--foam); outline-offset: 4px; }
+
+  .slip {
+    display: grid;
+    gap: 0.5rem;
+    padding-block: 1.25rem;
+    border-block: 2px dashed var(--swell);
+    min-height: 11.5rem;
+    align-content: start;
+  }
+  .slip-label {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ember);
+    font-variant-numeric: tabular-nums;
+  }
+  .slip-heading {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  .slip-omen { margin: 0; font-style: italic; font-size: 1.1875rem; max-width: 32rem; }
+  .slip-chest { margin: 0; color: var(--mist); }
+  .slip-chest strong { color: var(--brass); font-weight: 700; }
+
+  /* ---------- facts ---------- */
+  .facts {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.25rem clamp(1.5rem, 4vw, 3rem);
+    padding-top: clamp(1.25rem, 3vw, 2rem);
+    border-top: 1px solid var(--swell);
+  }
+  .facts div { min-width: 0; display: grid; gap: 0.25rem; align-content: start; }
+  .facts dt {
+    font-family: var(--display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--brass);
+    font-variant-numeric: tabular-nums;
+  }
+  .facts dd { margin: 0; color: var(--mist); font-size: 0.9375rem; }
+
+  .truth {
+    margin: 0;
+    max-width: 44rem;
+    font-size: 0.9375rem;
+    color: var(--mist);
+  }
+  .truth strong { color: var(--foam); font-weight: 700; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bezel { animation: none; }
+    .stage.charged::after { animation: none; }
+    .cast { transition: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="sea" aria-hidden="true"></canvas>
+
+<main class="wrap">
+  <section class="ritual">
+    <header class="head">
+      <p class="eyebrow">Luck charm for the Pirate Shop token</p>
+      <h1>May your next chest hold <em>the token</em></h1>
+      <p class="lede">Cast the charm before you drop. The coin picks your landing spot, names your lucky chest and sends you in feeling fortunate.</p>
+    </header>
+
+    <div class="stage" id="stage" aria-hidden="true">
+      <div class="bezel-spin" id="bezel-spin">
+        <div class="bezel">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="95" fill="none" stroke="var(--swell)" stroke-width="6" stroke-dasharray="0.9 7.39"></circle>
+            <circle cx="100" cy="100" r="95" fill="none" stroke="var(--brass)" stroke-width="9" stroke-dasharray="1.4 147.83" stroke-dashoffset="0.7"></circle>
+            <circle cx="100" cy="100" r="88" fill="none" stroke="var(--swell)" stroke-width="0.6"></circle>
+            <g fill="var(--mist)" font-family="Alegreya Sans, Segoe UI, sans-serif" font-size="7" font-weight="700" text-anchor="middle">
+              <text x="100" y="18">N</text>
+              <text x="184.5" y="102.5">E</text>
+              <text x="100" y="187">S</text>
+              <text x="15.5" y="102.5">W</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="coin" id="coin">
+        <div class="face front">
+          <svg viewBox="0 0 200 200">
+            <defs>
+              <radialGradient id="g-rim" cx="35%" cy="28%" r="90%">
+                <stop offset="0" stop-color="var(--brass-lit)"></stop>
+                <stop offset="0.5" stop-color="var(--brass)"></stop>
+                <stop offset="1" stop-color="var(--brass-deep)"></stop>
+              </radialGradient>
+              <radialGradient id="g-well" cx="65%" cy="75%" r="95%">
+                <stop offset="0" stop-color="var(--brass-lit)"></stop>
+                <stop offset="0.45" stop-color="var(--brass)"></stop>
+                <stop offset="1" stop-color="var(--brass-deep)"></stop>
+              </radialGradient>
+              <path id="arc-front" d="M100,100 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none"></path>
+            </defs>
+            <circle cx="100" cy="100" r="98" fill="url(#g-rim)"></circle>
+            <circle cx="100" cy="100" r="91" fill="none" stroke="var(--brass-deep)" stroke-width="3" stroke-dasharray="0.1 5.62" stroke-linecap="round"></circle>
+            <circle cx="100" cy="100" r="84" fill="url(#g-well)" stroke="var(--brass-deep)" stroke-width="1.2"></circle>
+            <text fill="var(--brass-deep)" font-family="Alegreya Sans, Segoe UI, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.2">
+              <textPath href="#arc-front" textLength="400" lengthAdjust="spacing">LUCK TO WHOEVER OPENS THE NEXT CHEST ✦ FAIR WINDS ✦</textPath>
+            </text>
+            <circle cx="100" cy="100" r="54" fill="none" stroke="var(--brass-deep)" stroke-width="1"></circle>
+            <polygon fill="var(--brass-deep)" points="100,54 103.83,90.76 119.8,80.2 109.24,96.17 146,100 109.24,103.83 119.8,119.8 103.83,109.24 100,146 96.17,109.24 80.2,119.8 90.76,103.83 54,100 90.76,96.17 80.2,80.2 96.17,90.76"></polygon>
+            <circle cx="100" cy="100" r="5" fill="var(--brass-lit)"></circle>
+          </svg>
+        </div>
+        <div class="face back">
+          <svg viewBox="0 0 200 200">
+            <defs>
+              <path id="arc-back" d="M100,100 m-65,0 a65,65 0 1,1 130,0 a65,65 0 1,1 -130,0" fill="none"></path>
+            </defs>
+            <circle cx="100" cy="100" r="98" fill="url(#g-rim)"></circle>
+            <circle cx="100" cy="100" r="91" fill="none" stroke="var(--brass-deep)" stroke-width="3" stroke-dasharray="0.1 5.62" stroke-linecap="round"></circle>
+            <circle cx="100" cy="100" r="84" fill="url(#g-well)" stroke="var(--brass-deep)" stroke-width="1.2"></circle>
+            <text fill="var(--brass-deep)" font-family="Alegreya Sans, Segoe UI, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.2">
+              <textPath href="#arc-back" textLength="400" lengthAdjust="spacing">ONE CHEST IN SEVEN HUNDRED THOUSAND ✦ SO THEY SAY ✦</textPath>
+            </text>
+            <circle cx="100" cy="100" r="54" fill="none" stroke="var(--brass-deep)" stroke-width="1"></circle>
+            <circle cx="100" cy="88" r="15" fill="var(--brass-deep)"></circle>
+            <polygon fill="var(--brass-deep)" points="93,96 107,96 114,132 86,132"></polygon>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="act">
+      <div class="controls">
+        <button class="cast" id="cast" type="button">Cast the charm</button>
+        <button class="quiet" id="sound" type="button" aria-pressed="true">Sound on</button>
+      </div>
+
+      <div class="slip" id="slip" aria-live="polite">
+        <p class="slip-label" id="slip-label">Awaiting your cast</p>
+        <p class="slip-heading" id="slip-heading">The coin is quiet</p>
+        <p class="slip-omen" id="slip-omen">Cast the charm to get a landing spot, a lucky chest and an omen for your next match.</p>
+        <p class="slip-chest" id="slip-chest" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <dl class="facts">
+    <div>
+      <dt>1 in 700,000</dt>
+      <dd>Estimated odds per chest. Epic has not published the real drop rate.</dd>
+    </div>
+    <div>
+      <dt>14 days</dt>
+      <dd>How long the Item Shop stays free for V-Bucks items once you activate the token.</dd>
+    </div>
+    <div>
+      <dt>15 Dec</dt>
+      <dd>Reported last day to activate it this year. Check the in-game message for your dates.</dd>
+    </div>
+  </dl>
+
+  <p class="truth"><strong>This is a charm for luck and nothing more.</strong> It cannot put a token on your account, and nothing outside the game can. The token only drops from chests during Treasure Hunters, so anyone selling or generating one is running a scam. Fan-made page, not affiliated with Epic Games.</p>
+</main>
+
+<script>
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $("stage"), coin = $("coin"), bezelSpin = $("bezel-spin");
+  var castBtn = $("cast"), soundBtn = $("sound"), slip = $("slip");
+  var label = $("slip-label"), heading = $("slip-heading"), omen = $("slip-omen"), chest = $("slip-chest");
+
+  /* ---------- small per-viewer memory ---------- */
+  function load(key, fallback) {
+    try { var v = localStorage.getItem(key); return v === null ? fallback : v; } catch (e) { return fallback; }
+  }
+  function save(key, value) { try { localStorage.setItem(key, String(value)); } catch (e) {} }
+
+  var count = parseInt(load("ptc-count", "0"), 10) || 0;
+  var soundOn = load("ptc-sound", "on") !== "off";
+
+  function paintSound() {
+    soundBtn.textContent = soundOn ? "Sound on" : "Sound off";
+    soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
+  }
+  paintSound();
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
+    save("ptc-sound", soundOn ? "on" : "off");
+    paintSound();
+  });
+
+  /* ---------- the fortunes ---------- */
+  var spots = ["Fortune's Fort", "Lantern Landing", "Plunder Port"];
+  var omens = [
+    "A gull lands twice on the same mast. Open the chest you almost walked past.",
+    "The tide owes you one. Collect it at the first chest you hear.",
+    "Gold hums loudest in quiet rooms. Check the attic.",
+    "Trade no shots before your third chest. The sea rewards patience.",
+    "A crooked compass still finds harbour. Take the long way round the building.",
+    "Your crew shares the wind tonight. Drop together and share the find.",
+    "The chest by the water has been waiting the longest.",
+    "Fortune likes a tidy backpack. Drop what you do not need.",
+    "Listen before you loot. The shimmer comes from below deck.",
+    "The storm closing in is only the sea hurrying you to the next chest.",
+    "Knock twice on the lid. Nobody has proven it does not work.",
+    "Whoever opens the last chest of the match opens it for all of us."
+  ];
+  var ordinals = ["2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"];
+  var last = { spot: -1, omen: -1 };
+
+  function pick(list, key) {
+    var i;
+    do { i = Math.floor(Math.random() * list.length); } while (list.length > 1 && i === last[key]);
+    last[key] = i;
+    return list[i];
+  }
+
+  function reveal() {
+    count += 1;
+    save("ptc-count", count);
+    label.textContent = "Charm no. " + count + " is cast";
+    heading.textContent = "Drop at " + pick(spots, "spot");
+    omen.textContent = pick(omens, "omen");
+    chest.innerHTML = "Your lucky chest is the <strong>" + ordinals[Math.floor(Math.random() * ordinals.length)] + "</strong> one you open.";
+    chest.hidden = false;
+    if (!reduce && slip.animate) {
+      slip.animate(
+        [{ opacity: 0.25, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }],
+        { duration: 420, easing: "ease-out" }
+      );
+    }
+  }
+
+  /* ---------- sound: a short coin ring ---------- */
+  var audio = null;
+  function ting() {
+    if (!soundOn) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === "suspended") audio.resume();
+      var now = audio.currentTime;
+      [[1760, 0.16, 1.1], [2637, 0.09, 0.8], [3520, 0.05, 0.5]].forEach(function (p) {
+        var osc = audio.createOscillator(), gain = audio.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = p[0];
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(p[1], now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + p[2]);
+        osc.connect(gain).connect(audio.destination);
+        osc.start(now);
+        osc.stop(now + p[2] + 0.05);
+      });
+    } catch (e) {}
+  }
+
+  /* ---------- canvas: drifting dust and the burst ---------- */
+  var canvas = $("sea"), ctx = canvas.getContext("2d");
+  var css = getComputedStyle(document.documentElement);
+  var colors = [css.getPropertyValue("--brass").trim(), css.getPropertyValue("--brass-lit").trim(), css.getPropertyValue("--ember").trim()];
+  var W = 0, H = 0, motes = [], sparks = [];
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (reduce) draw();
+  }
+  function seed() {
+    motes = [];
+    for (var i = 0; i < 46; i++) {
+      motes.push({
+        x: Math.random(), y: Math.random(),
+        r: 0.6 + Math.random() * 1.6,
+        vy: 0.004 + Math.random() * 0.012,
+        sway: Math.random() * Math.PI * 2,
+        a: 0.12 + Math.random() * 0.35
+      });
+    }
+  }
+  function burst() {
+    if (reduce) return;
+    var box = coin.getBoundingClientRect();
+    var cx = box.left + box.width / 2, cy = box.top + box.height / 2;
+    for (var i = 0; i < 110; i++) {
+      var ang = Math.random() * Math.PI * 2, speed = 2 + Math.random() * 7;
+      sparks.push({
+        x: cx, y: cy,
+        vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed - 2,
+        r: 1 + Math.random() * 2.6,
+        life: 0, max: 50 + Math.random() * 50,
+        c: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = colors[0];
+    for (var i = 0; i < motes.length; i++) {
+      var m = motes[i];
+      ctx.globalAlpha = m.a;
+      ctx.beginPath();
+      ctx.arc(m.x * W + Math.sin(m.sway) * 10, m.y * H, m.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (var j = 0; j < sparks.length; j++) {
+      var s = sparks[j];
+      ctx.globalAlpha = Math.max(0, 1 - s.life / s.max);
+      ctx.fillStyle = s.c;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function tick() {
+    for (var i = 0; i < motes.length; i++) {
+      var m = motes[i];
+      m.y -= m.vy / 60;
+      m.sway += 0.008;
+      if (m.y < -0.02) { m.y = 1.02; m.x = Math.random(); }
+    }
+    for (var j = sparks.length - 1; j >= 0; j--) {
+      var s = sparks[j];
+      s.life += 1; s.vy += 0.16; s.vx *= 0.985;
+      s.x += s.vx; s.y += s.vy;
+      if (s.life >= s.max) sparks.splice(j, 1);
+    }
+    draw();
+    if (!document.hidden) requestAnimationFrame(tick);
+  }
+  seed();
+  resize();
+  window.addEventListener("resize", resize);
+  if (!reduce) {
+    requestAnimationFrame(tick);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) requestAnimationFrame(tick); });
+  }
+
+  /* ---------- casting ---------- */
+  var busy = false;
+  function finish() {
+    stage.classList.remove("charged");
+    void stage.offsetWidth;
+    stage.classList.add("charged");
+    burst();
+    ting();
+    reveal();
+    busy = false;
+    castBtn.disabled = false;
+    castBtn.textContent = "Cast again";
+  }
+  function cast() {
+    if (busy) return;
+    busy = true;
+    castBtn.disabled = true;
+    castBtn.textContent = "Casting…";
+    if (reduce || !coin.animate) { finish(); return; }
+    bezelSpin.animate(
+      [{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
+      { duration: 1700, easing: "cubic-bezier(.3,.1,.2,1)" }
+    );
+    var flip = coin.animate(
+      [
+        { transform: "translateY(0) rotateY(0deg) scale(1)" },
+        { transform: "translateY(-14%) rotateY(900deg) scale(1.08)", offset: 0.55 },
+        { transform: "translateY(0) rotateY(1440deg) scale(1)" }
+      ],
+      { duration: 1700, easing: "cubic-bezier(.25,.6,.3,1)" }
+    );
+    flip.onfinish = finish;
+    flip.oncancel = finish;
+  }
+  castBtn.addEventListener("click", cast);
+  stage.addEventListener("click", cast);
+})();
+</script>
+</body>
+</html>
